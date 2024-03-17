@@ -1,56 +1,66 @@
 <?php
 
-namespace Tutunium\Controllers;
+namespace Tutunium\App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Tutunium\Repositories\Repository;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Tutunium\App\Repositories\Repository;
+use Tutunium\App\Services\Service;
 
 class CrudController extends Controller
 {
 
 	protected $repository;
-
+	protected $service;
 	/**
      * @param Repository $repository
+     * @param Service $service
 	 * @return void
 	 */
-	public function __construct(Repository $repository)
+	public function __construct(Repository $repository, Service $service)
 	{
 		$this->repository = $repository;
+		$this->service = $service;
 	}
 
 	/**
 	 *
 	 * @param  Request $request
 	 * @param  mixed  $ids
-	 * @return mixed
+	 * @return View
 	 */
-	public function index(Request $request, ...$ids)
+	public function index(Request $request, ...$ids): View
 	{
-        dd($request, $ids);
+		return view('tutunium::index');
 	}
 
 	/**
 	 *
 	 * @param  Request $request
 	 * @param  mixed  $ids
-	 * @return mixed
+	 * @return View
 	 */
-	public function create(Request $request, ...$ids)
+	public function create(Request $request, ...$ids): View
 	{
-        dd($request, $ids);
+		return view('tutunium::create');
     }
 
 	/**
 	 *
 	 * @param  Request $request
 	 * @param  mixed  $ids
-	 * @return mixed
+	 * @return RedirectResponse
 	 */
-	public function store(Request $request, ...$ids)
+	public function store(Request $request, ...$ids): RedirectResponse
 	{
-        dd($request, $ids);
+		$model = $this->service->instantiateModel($this->repository->getModel());
+		$validate = $this->service->requestValidation($request);
+		$this->service->fillModel($model, $request->all());
+		$this->service->saveModel($model);
+		
+        return redirect()->route($this->repository->getViewIndex())->with('success', 'Utilisateur créé avec succès !');
 	}
 
 	/**
