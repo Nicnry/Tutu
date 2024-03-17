@@ -8,6 +8,10 @@ use Tutunium\App\Exceptions\ClassNotFoundException;
 
 abstract class Service
 {
+    /**
+     * @param string $className
+     * @return Model|null
+     */
     public function instantiateModel(string $className): ?Model
     {
         try {
@@ -21,22 +25,44 @@ abstract class Service
         }
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     public function requestValidation(Request $request): array
     {
         return $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:8',
         ]);
     }
 
+    /**
+     * @param Model &$model
+     * @param array $modelData
+     * @return void
+     */
     public function fillModel(Model &$model, array $modelData): void
     {
         $model->fill($modelData);
     }
 
+    /**
+     * @param Model &$model
+     * @return void
+     */
     public function saveModel(Model $model): void
     {
         $model->save();
+    }
+
+    /**
+     * @param Model &$model
+     * @return void
+     */
+    public function deleteModel(Model $model): void
+    {
+        $model->delete();
     }
 }

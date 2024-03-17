@@ -17,7 +17,6 @@ class CrudController extends Controller
 	/**
      * @param Repository $repository
      * @param Service $service
-	 * @return void
 	 */
 	public function __construct(Repository $repository, Service $service)
 	{
@@ -27,83 +26,103 @@ class CrudController extends Controller
 
 	/**
 	 *
-	 * @param  Request $request
-	 * @param  mixed  $ids
 	 * @return View
 	 */
-	public function index(Request $request, ...$ids): View
+	public function index(): View
 	{
-		return view('tutunium::index');
+		$models = $this->service->instantiateModel($this->repository->getModel())::all();
+		$repository = $this->repository;
+		return view('tutunium::index', compact('models', 'repository'));
 	}
 
 	/**
 	 *
-	 * @param  Request $request
-	 * @param  mixed  $ids
 	 * @return View
 	 */
-	public function create(Request $request, ...$ids): View
+	public function create(): View
 	{
-		return view('tutunium::create');
+		$repository = $this->repository;
+		return view('tutunium::create', compact('repository'));
     }
 
 	/**
 	 *
 	 * @param  Request $request
-	 * @param  mixed  $ids
 	 * @return RedirectResponse
 	 */
-	public function store(Request $request, ...$ids): RedirectResponse
+	public function store(Request $request): RedirectResponse
 	{
 		$model = $this->service->instantiateModel($this->repository->getModel());
 		$validate = $this->service->requestValidation($request);
 		$this->service->fillModel($model, $request->all());
 		$this->service->saveModel($model);
 		
-        return redirect()->route($this->repository->getViewIndex())->with('success', 'Utilisateur créé avec succès !');
+        return redirect()->route($this->repository->getRouteIndex())->with('success', 'Created !');
 	}
 
 	/**
 	 *
 	 * @param  Request  $request
-	 * @param  mixed  $ids
-	 * @return mixed
+	 * @param  string  $ids
+	 * @return View
 	 */
-	public function show(Request $request, ...$ids)
+	public function show(Request $request, string ...$ids): View
 	{
-        dd($request, $ids);
+		$model = $this->service
+					->instantiateModel($this->repository->getModel())
+					->find($ids[0]);
+		$repository = $this->repository;
+		return view($this->repository->getViewShow(), compact('model', 'repository'));
     }
 
 	/**
 	 *
 	 * @param  Request  $request
-	 * @param  mixed  $ids
-	 * @return 
+	 * @param  string  $ids
+	 * @return View
 	 */
-	public function edit(Request $request, ...$ids)
+	public function edit(Request $request, string ...$ids): View
 	{
-        dd($request, $ids);
+		$model = $this->service
+			->instantiateModel($this->repository->getModel())
+			->find($ids[0]);
+		$repository = $this->repository;
+
+		return view($this->repository->getViewEdit(), compact('model', 'repository'));
 	}
 
 	/**
 	 *
 	 * @param  Request  $request
-	 * @param  mixed  $ids
-	 * @return mixed
+	 * @param  string  $ids
+	 * @return RedirectResponse
 	 */
-	public function update(Request $request, ...$ids)
+	public function update(Request $request, string ...$ids): RedirectResponse
 	{
-        dd($request, $ids);
+		$model = $this->service
+					->instantiateModel($this->repository->getModel())
+					->find($ids[0]);
+		//$validate = $this->service->requestValidation($request);
+		$this->service->fillModel($model, $request->all());
+		if ($model->isDirty()) {
+			$this->service->saveModel($model);
+		}
+        return redirect()->route($this->repository->getRouteIndex())->with('success', 'Edit successfully !');
 	}
 
 	/**
 	 *
-	 * @param  mixed  $ids
-	 * @return mixed
+	 * @param  string  $ids
+	 * @return RedirectResponse
 	 */
-	public function destroy(...$ids)
+	public function destroy(string ...$ids): RedirectResponse
 	{
-        dd($ids);
+		$model = $this->service
+			->instantiateModel($this->repository->getModel())
+			->find($ids[0]);
+
+		$this->service->deleteModel($model);
+        return redirect()->route($this->repository->getRouteIndex())->with('success', 'Deleted successfully !');
 	}
 
 }

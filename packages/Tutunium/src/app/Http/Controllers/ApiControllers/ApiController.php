@@ -18,7 +18,6 @@ class ApiController extends CrudController
 	/**
      * @param WebRepository $repository
      * @param WebService $service
-	 * @return void
 	 */
 	public function __construct(WebRepository $repository, WebService $service)
 	{
@@ -28,47 +27,43 @@ class ApiController extends CrudController
 
 	/**
 	 *
-	 * @param  Request $request
-	 * @param  mixed  $ids
 	 * @return View
 	 */
-	public function index(Request $request, ...$ids): View
+	public function index(): View
 	{
-		$index = parent::index($request, ...$ids);
+		$index = parent::index();
 		return $index;
 	}
 
 	/**
 	 *
-	 * @param  Request $request
-	 * @param  mixed  $ids
 	 * @return View
 	 */
-	public function create(Request $request, ...$ids): View
+	public function create(): View
 	{
-		$create = parent::create($request, ...$ids);
+		$create = parent::create();
 		return $create;
     }
 
 	/**
 	 *
 	 * @param  Request $request
-	 * @param  mixed  $ids
+	 * @param  string  $ids
 	 * @return RedirectResponse
 	 */
-	public function store(Request $request, ...$ids): RedirectResponse
+	public function store(Request $request): RedirectResponse
 	{
-        $store = parent::store($request, ...$ids);
+        $store = parent::store($request);
 		return $store;
 	}
 
 	/**
 	 *
 	 * @param  Request  $request
-	 * @param  mixed  $ids
-	 * @return mixed
+	 * @param  string  $ids
+	 * @return View
 	 */
-	public function show(Request $request, ...$ids)
+	public function show(Request $request, ...$ids): View
 	{
         $show = parent::show($request, ...$ids);
 		return $show;
@@ -77,10 +72,10 @@ class ApiController extends CrudController
 	/**
 	 *
 	 * @param  Request  $request
-	 * @param  mixed  $ids
-	 * @return 
+	 * @param  string  $ids
+	 * @return View
 	 */
-	public function edit(Request $request, ...$ids)
+	public function edit(Request $request, string ...$ids): View
 	{
         $edit = parent::edit($request, ...$ids);
 		return $edit;
@@ -89,10 +84,10 @@ class ApiController extends CrudController
 	/**
 	 *
 	 * @param  Request  $request
-	 * @param  mixed  $ids
-	 * @return mixed
+	 * @param  string  $ids
+	 * @return RedirectResponse
 	 */
-	public function update(Request $request, ...$ids)
+	public function update(Request $request, string ...$ids): RedirectResponse
 	{
         $update = parent::update($request, ...$ids);
 		return $update;
@@ -100,10 +95,10 @@ class ApiController extends CrudController
 
 	/**
 	 *
-	 * @param  mixed  $ids
-	 * @return mixed
+	 * @param  string  $ids
+	 * @return RedirectResponse
 	 */
-	public function destroy(...$ids)
+	public function destroy(string ...$ids): RedirectResponse
 	{
         $destroy = parent::destroy(...$ids);
 		return $destroy;
