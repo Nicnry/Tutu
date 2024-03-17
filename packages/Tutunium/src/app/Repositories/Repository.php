@@ -24,6 +24,8 @@ abstract class Repository
 
     protected $routeName = null;
 
+    protected $modelFields = [];
+
     /**
      * @return string|null
      */
@@ -166,6 +168,21 @@ abstract class Repository
     public function getViewDestroy(): string
     {
         return $this->getView($this->destroy);
+    }
+
+    /**
+     * @return array
+     */
+    public function getModelFields(): array
+    {
+        $fields = [];
+        if($this->model) {
+            $model = new $this->model();
+            foreach($model->getFillable() as $fillable) {
+                $fields[ucfirst($fillable)] = $fillable;
+            }
+        }
+        return $fields;
     }
 
 }
