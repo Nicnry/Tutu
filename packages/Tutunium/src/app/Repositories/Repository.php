@@ -4,6 +4,7 @@ namespace Tutunium\App\Repositories;
 
 abstract class Repository
 {
+    
     protected $model = null;
 
     protected $packageName = 'tutunium';

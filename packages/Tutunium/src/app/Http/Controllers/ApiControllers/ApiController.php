@@ -12,6 +12,7 @@ class ApiController extends CrudController
 {
 
 	protected $repository;
+	
 	protected $service;
 
 	/**

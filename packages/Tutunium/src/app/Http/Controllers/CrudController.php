@@ -12,9 +12,11 @@ use Tutunium\App\Services\Service;
 
 class CrudController extends Controller
 {
-
+	
 	protected $repository;
+
 	protected $service;
+
 	/**
      * @param Repository $repository
      * @param Service $service
