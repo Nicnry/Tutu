@@ -35,6 +35,7 @@ class CrudController extends Controller
 	{
 		$models = $this->service->instantiateModel($this->repository->getModel())::all();
 		$repository = $this->repository;
+		
 		return compact('models', 'repository');
 	}
 
