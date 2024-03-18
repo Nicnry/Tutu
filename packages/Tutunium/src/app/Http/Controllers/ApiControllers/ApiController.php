@@ -1,6 +1,6 @@
 <?php
 
-namespace Tutunium\App\Http\ApiControllers\Controllers;
+namespace Tutunium\App\Http\Controllers\ApiControllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

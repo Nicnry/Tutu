@@ -9,6 +9,7 @@ class TutuniumServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadRoutesFrom(__DIR__.'/routes/web/web.php');
+        $this->loadRoutesFrom(__DIR__.'/routes/api/api.php');
         $this->publishesMigrations([
             __DIR__.'/../database/migrations' => database_path('migrations'),
         ]);
