@@ -19,7 +19,6 @@ class WebController extends CrudController
 	/**
      * @param WebRepository $repository
      * @param WebService $service
-	 * @return void
 	 */
 	public function __construct(WebRepository $repository, WebService $service)
 	{

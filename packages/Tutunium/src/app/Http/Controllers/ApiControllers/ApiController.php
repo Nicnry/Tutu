@@ -12,13 +12,12 @@ class ApiController extends CrudController
 {
 
 	protected $repository;
-	
+
 	protected $service;
 
 	/**
      * @param ApiRepository $repository
      * @param ApiService $service
-	 * @return void
 	 */
 	public function __construct(ApiRepository $repository, ApiService $service)
 	{
