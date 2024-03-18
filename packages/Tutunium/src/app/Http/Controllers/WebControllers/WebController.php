@@ -32,8 +32,12 @@ class WebController extends CrudController
 	 */
 	public function index(): View
 	{
-		$index = parent::index();
-		return $index;
+		$parent = parent::index();
+
+		$models = $parent['models'];
+		$repository = $parent['repository'];
+
+		return view($repository->getViewIndex(), compact('models', 'repository'));
 	}
 
 	/**
@@ -42,8 +46,9 @@ class WebController extends CrudController
 	 */
 	public function create(): View
 	{
-		$create = parent::create();
-		return $create;
+		$repository = $this->repository;
+
+		return view($repository->getViewCreate(), compact('repository'));
     }
 
 	/**
@@ -53,8 +58,11 @@ class WebController extends CrudController
 	 */
 	public function store(Request $request): RedirectResponse
 	{
-        $store = parent::store($request);
-		return $store;
+        $parent = parent::store($request);
+
+		$repository = $parent['repository'];
+
+        return redirect()->route($repository->getRouteIndex())->with('success', 'Created !');
 	}
 
 	/**
@@ -65,8 +73,12 @@ class WebController extends CrudController
 	 */
 	public function show(Request $request, ...$ids): View
 	{
-        $show = parent::show($request, ...$ids);
-		return $show;
+        $parent = parent::show($request, ...$ids);
+
+		$repository = $parent['repository'];
+		$model = $parent['model'];
+
+		return view($repository->getViewShow(), compact('model', 'repository'));
     }
 
 	/**
@@ -77,8 +89,12 @@ class WebController extends CrudController
 	 */
 	public function edit(Request $request, string ...$ids): View
 	{
-        $edit = parent::edit($request, ...$ids);
-		return $edit;
+		$model = $this->service
+					->instantiateModel($this->repository->getModel())
+					->find($ids[0]);
+		$repository = $this->repository;
+
+		return view($repository->getViewEdit(), compact('model', 'repository'));
 	}
 
 	/**
@@ -89,8 +105,11 @@ class WebController extends CrudController
 	 */
 	public function update(Request $request, string ...$ids): RedirectResponse
 	{
-        $update = parent::update($request, ...$ids);
-		return $update;
+        $parent = parent::update($request, ...$ids);
+
+		$repository = $parent['repository'];
+
+        return redirect()->route($repository->getRouteIndex())->with('success', 'Edit successfully !');
 	}
 
 	/**
@@ -100,8 +119,11 @@ class WebController extends CrudController
 	 */
 	public function destroy(string ...$ids): RedirectResponse
 	{
-        $destroy = parent::destroy(...$ids);
-		return $destroy;
+        $parent = parent::destroy(...$ids);
+
+		$repository = $parent['repository'];
+
+        return redirect()->route($repository->getRouteIndex())->with('success', 'Deleted successfully !');
 	}
 
 }

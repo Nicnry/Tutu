@@ -4,6 +4,7 @@ namespace Tutunium\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Tutunium\App\Repositories\Repository;
@@ -26,103 +27,83 @@ class CrudController extends Controller
 
 	/**
 	 *
-	 * @return View
+	 * @return array|JsonResponse|View
 	 */
-	public function index(): View
+	public function index(): array|JsonResponse|View
 	{
 		$models = $this->service->instantiateModel($this->repository->getModel())::all();
 		$repository = $this->repository;
-		return view('tutunium::index', compact('models', 'repository'));
+		return compact('models', 'repository');
 	}
-
-	/**
-	 *
-	 * @return View
-	 */
-	public function create(): View
-	{
-		$repository = $this->repository;
-		return view('tutunium::create', compact('repository'));
-    }
 
 	/**
 	 *
 	 * @param  Request $request
-	 * @return RedirectResponse
+	 * @return array|JsonResponse|RedirectResponse
 	 */
-	public function store(Request $request): RedirectResponse
+	public function store(Request $request): array|JsonResponse|RedirectResponse
 	{
-		$model = $this->service->instantiateModel($this->repository->getModel());
+		$repository = $this->repository;
+		$model = $this->service->instantiateModel($repository->getModel());
 		$validate = $this->service->requestValidation($request);
 		$this->service->fillModel($model, $request->all());
 		$this->service->saveModel($model);
-		
-        return redirect()->route($this->repository->getRouteIndex())->with('success', 'Created !');
+
+		return compact('model', 'repository');
 	}
 
 	/**
 	 *
 	 * @param  Request  $request
 	 * @param  string  $ids
-	 * @return View
+	 * @return array|JsonResponse|View
 	 */
-	public function show(Request $request, string ...$ids): View
+	public function show(Request $request, string ...$ids): array|JsonResponse|View
 	{
 		$model = $this->service
 					->instantiateModel($this->repository->getModel())
 					->find($ids[0]);
 		$repository = $this->repository;
-		return view($this->repository->getViewShow(), compact('model', 'repository'));
+
+		return compact('model', 'repository');
     }
 
 	/**
 	 *
 	 * @param  Request  $request
 	 * @param  string  $ids
-	 * @return View
+	 * @return array|JsonResponse|RedirectResponse
 	 */
-	public function edit(Request $request, string ...$ids): View
+	public function update(Request $request, string ...$ids): array|JsonResponse|RedirectResponse
 	{
-		$model = $this->service
-			->instantiateModel($this->repository->getModel())
-			->find($ids[0]);
 		$repository = $this->repository;
-
-		return view($this->repository->getViewEdit(), compact('model', 'repository'));
-	}
-
-	/**
-	 *
-	 * @param  Request  $request
-	 * @param  string  $ids
-	 * @return RedirectResponse
-	 */
-	public function update(Request $request, string ...$ids): RedirectResponse
-	{
 		$model = $this->service
 					->instantiateModel($this->repository->getModel())
 					->find($ids[0]);
-		//$validate = $this->service->requestValidation($request);
+		$validate = $this->service->requestValidation($request);
 		$this->service->fillModel($model, $request->all());
 		if ($model->isDirty()) {
 			$this->service->saveModel($model);
 		}
-        return redirect()->route($this->repository->getRouteIndex())->with('success', 'Edit successfully !');
+
+		return compact('model', 'repository');
 	}
 
 	/**
 	 *
 	 * @param  string  $ids
-	 * @return RedirectResponse
+	 * @return array|JsonResponse|RedirectResponse
 	 */
-	public function destroy(string ...$ids): RedirectResponse
+	public function destroy(string ...$ids): array|JsonResponse|RedirectResponse
 	{
+		$repository = $this->repository;
 		$model = $this->service
-			->instantiateModel($this->repository->getModel())
+			->instantiateModel($repository->getModel())
 			->find($ids[0]);
 
 		$this->service->deleteModel($model);
-        return redirect()->route($this->repository->getRouteIndex())->with('success', 'Deleted successfully !');
+
+		return compact('model', 'repository');
 	}
 
 }

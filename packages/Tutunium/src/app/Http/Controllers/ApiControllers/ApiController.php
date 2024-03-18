@@ -2,12 +2,11 @@
 
 namespace Tutunium\App\Http\ApiControllers\Controllers;
 
-use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use Tutunium\App\Http\Controllers\CrudController;
-use Tutunium\App\Repositories\WebRepositories\WebRepository;
-use Tutunium\App\Services\WebServices\WebService;
+use Tutunium\App\Repositories\ApiRepositories\ApiRepository;
+use Tutunium\App\Services\ApiServices\ApiService;
 
 class ApiController extends CrudController
 {
@@ -16,10 +15,11 @@ class ApiController extends CrudController
 	protected $service;
 
 	/**
-     * @param WebRepository $repository
-     * @param WebService $service
+     * @param ApiRepository $repository
+     * @param ApiService $service
+	 * @return void
 	 */
-	public function __construct(WebRepository $repository, WebService $service)
+	public function __construct(ApiRepository $repository, ApiService $service)
 	{
 		$this->repository = $repository;
 		$this->service = $service;
@@ -27,81 +27,79 @@ class ApiController extends CrudController
 
 	/**
 	 *
-	 * @return View
+	 * @return JsonResponse
 	 */
-	public function index(): View
+	public function index(): JsonResponse
 	{
-		$index = parent::index();
-		return $index;
-	}
+		$parent = parent::index();
 
-	/**
-	 *
-	 * @return View
-	 */
-	public function create(): View
-	{
-		$create = parent::create();
-		return $create;
-    }
+		$models = $parent['models'];
+
+		return response()->json($models);
+	}
 
 	/**
 	 *
 	 * @param  Request $request
-	 * @param  string  $ids
-	 * @return RedirectResponse
+	 * @return JsonResponse
 	 */
-	public function store(Request $request): RedirectResponse
+	public function store(Request $request): JsonResponse
 	{
-        $store = parent::store($request);
-		return $store;
+        $parent = parent::store($request);
+
+		$repository = $parent['repository'];
+		$model = $parent['model'];
+
+		return response()->json($model, 201);
 	}
 
 	/**
 	 *
 	 * @param  Request  $request
 	 * @param  string  $ids
-	 * @return View
+	 * @return JsonResponse
 	 */
-	public function show(Request $request, ...$ids): View
+	public function show(Request $request, ...$ids): JsonResponse
 	{
-        $show = parent::show($request, ...$ids);
-		return $show;
+        $parent = parent::show($request, ...$ids);
+
+		$repository = $parent['repository'];
+		$model = $parent['model'];
+
+		return response()->json($model);
     }
 
 	/**
 	 *
 	 * @param  Request  $request
 	 * @param  string  $ids
-	 * @return View
+	 * @return JsonResponse
 	 */
-	public function edit(Request $request, string ...$ids): View
+	public function update(Request $request, string ...$ids): JsonResponse
 	{
-        $edit = parent::edit($request, ...$ids);
-		return $edit;
-	}
+        $parent = parent::update($request, ...$ids);
 
-	/**
-	 *
-	 * @param  Request  $request
-	 * @param  string  $ids
-	 * @return RedirectResponse
-	 */
-	public function update(Request $request, string ...$ids): RedirectResponse
-	{
-        $update = parent::update($request, ...$ids);
-		return $update;
+		$repository = $parent['repository'];
+		$model = $parent['model'];
+
+		return response()->json($model);
 	}
 
 	/**
 	 *
 	 * @param  string  $ids
-	 * @return RedirectResponse
+	 * @return JsonResponse
 	 */
-	public function destroy(string ...$ids): RedirectResponse
+	public function destroy(string ...$ids): JsonResponse
 	{
-        $destroy = parent::destroy(...$ids);
-		return $destroy;
+        $parent = parent::destroy(...$ids);
+
+		$repository = $parent['repository'];
+		$model = $parent['model'];
+
+		return response()->json(null, 204);
+
 	}
 
 }
+
